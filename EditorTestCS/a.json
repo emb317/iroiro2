@@ -1,0 +1,53 @@
+{
+ "t": "rt",
+ "c": {
+  "sh1": {
+   "t": "sh",
+   "v": "Sheet1",
+   "c": {
+    "sh1-1": {
+     "t": "sh",
+     "v": "Sheet1-1",
+     "c": {
+      "rect1": {
+       "t": "shp.rect",
+       "v": "Test rect!!!",
+       "pos":[123,123],
+       "size":[100,80]
+      },
+      "rect2": {
+       "t": "shp.line",
+       "v": "Test rect!!!",
+       "color":"red",
+       "pos":[50,50],
+       "size":[200,1]
+      }
+     }
+    }
+   }
+  },
+  "sh2": {
+   "t": "sh",
+   "v": "Sheet2",
+   "c": {
+    "seq1": {
+     "t": "seq",
+     "v": "Sequence 1",
+     "c": {
+      "obj1": {
+       "t": "seq.obj",
+       "c": {
+        "obj1.1": { "t": "seq.obj" },
+        "obj1.2": { "t": "seq.obj" }
+       }
+      },
+      "obj2": { "t": "seq.obj", "v":"Object B" },
+      "obj3": { "t": "seq.obj", "v":"Object C" },
+
+      "msg1": { "t": "seq.msg", "src":"obj1.2", "dst":"obj2", "v":"Test message!" }
+     }
+    }
+   }
+  }
+ }
+}
