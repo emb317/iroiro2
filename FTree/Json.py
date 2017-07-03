@@ -3,6 +3,8 @@ import clr
 clr.AddReference('System.Web.Extensions')
 from System.Web.Script.Serialization import JavaScriptSerializer
 
+from Lib import *
+
 #System.Diagnostics.Debug.WriteLine(s)
 
 def LoadJson(path):
