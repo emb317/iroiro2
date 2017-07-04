@@ -1,17 +1,18 @@
 ﻿import System
+from System.IO import *
+from System.Text import *
+
 import clr
 clr.AddReference('System.Web.Extensions')
 from System.Web.Script.Serialization import JavaScriptSerializer
 
-from Lib import *
 
 #System.Diagnostics.Debug.WriteLine(s)
 
 def LoadJson(path):
-	f = open(path, 'r')
-	buffer = f.read()
-	f.close()
-	
+	sr = StreamReader(path, Encoding.GetEncoding("UTF-8"));
+	buffer = sr.ReadToEnd();
+	sr.Close();
 	return JavaScriptSerializer().DeserializeObject(buffer)
 	
 def SaveJson(path, config):
@@ -44,7 +45,6 @@ def SaveJson(path, config):
 		if len(s) > 0 and (s[-1] == '{' or s[-1] == '['):
 			indent += 1
 
-	f = open(path, 'w')
-	f.write(buffer)
-	f.close()
-
+	sw = StreamWriter(path, False, Encoding.GetEncoding("UTF-8"));
+	sw.Write(buffer);
+	sw.Close();

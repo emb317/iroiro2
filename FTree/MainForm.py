@@ -207,14 +207,14 @@ class MainForm(Form):
 			self._toolStripTextBox1]))
 		self._menuStrip1.Location = System.Drawing.Point(0, 0)
 		self._menuStrip1.Name = "menuStrip1"
-		self._menuStrip1.Size = System.Drawing.Size(693, 27)
+		self._menuStrip1.Size = System.Drawing.Size(693, 29)
 		self._menuStrip1.TabIndex = 2
 		self._menuStrip1.Text = "menuStrip1"
 		# 
 		# splitContainer1
 		# 
 		self._splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
-		self._splitContainer1.Location = System.Drawing.Point(0, 27)
+		self._splitContainer1.Location = System.Drawing.Point(0, 29)
 		self._splitContainer1.Name = "splitContainer1"
 		# 
 		# splitContainer1.Panel1
@@ -225,14 +225,13 @@ class MainForm(Form):
 		# 
 		self._splitContainer1.Panel2.Controls.Add(self._webBrowser1)
 		self._splitContainer1.Panel2.Controls.Add(self._comboBox1)
-		self._splitContainer1.Size = System.Drawing.Size(693, 321)
+		self._splitContainer1.Size = System.Drawing.Size(693, 319)
 		self._splitContainer1.SplitterDistance = 231
 		self._splitContainer1.TabIndex = 3
 		# 
 		# treeView1
 		# 
 		self._treeView1.AllowDrop = True
-		self._treeView1.CheckBoxes = True
 		self._treeView1.ContextMenuStrip = self._contextMenuStrip1
 		self._treeView1.Dock = System.Windows.Forms.DockStyle.Fill
 		self._treeView1.Font = System.Drawing.Font("MS UI Gothic", 9, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 128)
@@ -244,7 +243,7 @@ class MainForm(Form):
 		self._treeView1.Name = "treeView1"
 		self._treeView1.PathSeparator = "/"
 		self._treeView1.SelectedImageIndex = 0
-		self._treeView1.Size = System.Drawing.Size(231, 321)
+		self._treeView1.Size = System.Drawing.Size(231, 319)
 		self._treeView1.TabIndex = 0
 		self._treeView1.AfterSelect += self.TreeView1AfterSelect
 		self._treeView1.NodeMouseClick += self.TreeView1NodeMouseClick
@@ -267,7 +266,7 @@ class MainForm(Form):
 		self._webBrowser1.Location = System.Drawing.Point(0, 20)
 		self._webBrowser1.MinimumSize = System.Drawing.Size(20, 20)
 		self._webBrowser1.Name = "webBrowser1"
-		self._webBrowser1.Size = System.Drawing.Size(458, 301)
+		self._webBrowser1.Size = System.Drawing.Size(458, 299)
 		self._webBrowser1.TabIndex = 1
 		# 
 		# imageList1
@@ -349,7 +348,7 @@ class MainForm(Form):
 		# ignoreItemToolStripMenuItem1
 		# 
 		self._ignoreItemToolStripMenuItem1.Name = "ignoreItemToolStripMenuItem1"
-		self._ignoreItemToolStripMenuItem1.Size = System.Drawing.Size(79, 23)
+		self._ignoreItemToolStripMenuItem1.Size = System.Drawing.Size(89, 25)
 		self._ignoreItemToolStripMenuItem1.Text = "Ignore item"
 		self._ignoreItemToolStripMenuItem1.Click += self.IgnoreItemToolStripMenuItem1Click
 		# 
@@ -359,33 +358,33 @@ class MainForm(Form):
 			[self._openSettingsjsonToolStripMenuItem,
 			self._exitToolStripMenuItem]))
 		self._fileToolStripMenuItem.Name = "fileToolStripMenuItem"
-		self._fileToolStripMenuItem.Size = System.Drawing.Size(37, 23)
+		self._fileToolStripMenuItem.Size = System.Drawing.Size(40, 25)
 		self._fileToolStripMenuItem.Text = "File"
 		# 
 		# exitToolStripMenuItem
 		# 
 		self._exitToolStripMenuItem.Name = "exitToolStripMenuItem"
-		self._exitToolStripMenuItem.Size = System.Drawing.Size(172, 22)
+		self._exitToolStripMenuItem.Size = System.Drawing.Size(184, 22)
 		self._exitToolStripMenuItem.Text = "Exit"
 		# 
 		# openSettingsjsonToolStripMenuItem
 		# 
 		self._openSettingsjsonToolStripMenuItem.Name = "openSettingsjsonToolStripMenuItem"
-		self._openSettingsjsonToolStripMenuItem.Size = System.Drawing.Size(172, 22)
+		self._openSettingsjsonToolStripMenuItem.Size = System.Drawing.Size(184, 22)
 		self._openSettingsjsonToolStripMenuItem.Text = "Open settings.json"
 		self._openSettingsjsonToolStripMenuItem.Click += self.OpenSettingsjsonToolStripMenuItemClick
 		# 
 		# addRootToolStripMenuItem1
 		# 
 		self._addRootToolStripMenuItem1.Name = "addRootToolStripMenuItem1"
-		self._addRootToolStripMenuItem1.Size = System.Drawing.Size(66, 23)
+		self._addRootToolStripMenuItem1.Size = System.Drawing.Size(70, 25)
 		self._addRootToolStripMenuItem1.Text = "Add root"
 		self._addRootToolStripMenuItem1.Click += self.AddRootToolStripMenuItem1Click
 		# 
 		# toolStripTextBox1
 		# 
 		self._toolStripTextBox1.Name = "toolStripTextBox1"
-		self._toolStripTextBox1.Size = System.Drawing.Size(100, 23)
+		self._toolStripTextBox1.Size = System.Drawing.Size(100, 25)
 		self._toolStripTextBox1.KeyDown += self.ToolStripTextBox1KeyDown
 		# 
 		# toolStripSeparator2
