@@ -44,6 +44,7 @@ class MainForm(Form):
 		self.config = {
 			'Root':[ 'C:' ],
 			'Ignore':[],
+			'IgnoreHidden':True,
 			'MaxFile':20,
 			'MaxFolder':30,
 			'Window': {
@@ -92,6 +93,10 @@ class MainForm(Form):
 			self.config['Root'].Add(path)
 	
 	def is_ignore_item(self, path):
+		if self.config['IgnoreHidden']:
+			if Directory.Exists(path):
+				if (int(DirectoryInfo(path).Attributes) & int(FileAttributes.Hidden)) != 0:
+					return True
 		for s in self.config['Ignore']:
 			if path.find(s) != -1:
 				return True
@@ -425,19 +430,21 @@ class MainForm(Form):
 
 	def ComboBox1TextChanged(self, sender, e):
 		if self._comboBox1.Focused:
-			self.NabigateBrower( self._comboBox1.Text )
+			self.NavigateBrower( self._comboBox1.Text )
 
 	def TreeView1AfterSelect(self, sender, e):
-		self.NabigateBrower( e.Node.FullPath )
 		if File.Exists(e.Node.FullPath):
-			self._comboBox1.Text = Path.GetDirectoryName( e.Node.FullPath ).replace('\\', '/')
+			if e.Node.Parent != None:
+				self.NavigateBrower( e.Node.Parent.FullPath )
+				self._comboBox1.Text = e.Node.Parent.FullPath
 		elif Directory.Exists(e.Node.FullPath):
+			self.NavigateBrower( e.Node.FullPath )
 			self._comboBox1.Text = e.Node.FullPath
 		
 		self._ignoreItemToolStripMenuItem1.Visible = e.Node.Level > 0
 		self._addRootToolStripMenuItem1.Visible = e.Node.Level > 0
 	
-	def NabigateBrower(self, path):
+	def NavigateBrower(self, path):
 		path = CorrectPath(path)
 		if File.Exists(path):
 			self._toolStripStatusLabel1.Text = path
