@@ -9,6 +9,10 @@ from System import *
 from System.IO import *
 from System.Text import *
 
+from Json import *
+
+jsonPath = 'settings.json'
+
 def log(s):
 	System.Diagnostics.Debug.WriteLine(s)
 
@@ -23,6 +27,26 @@ def CorrectPath(path):
 class MainForm(Form):
 	def __init__(self):
 		self.InitializeComponent()
+		
+		self.config = {
+			'Url1':'C:',
+			'Url2':'C:'
+		}
+		
+		try:
+			self.config.update(LoadJson(jsonPath))
+		except:
+			pass
+		
+		SaveJson(jsonPath, self.config)
+		
+		self._comboBox1.Text = self.config['Url1']
+		self._comboBox2.Text = self.config['Url2']
+		self.Navigate(self._comboBox1, self._webBrowser1)
+		self.Navigate(self._comboBox2, self._webBrowser2)
+
+	def MainFormFormClosed(self, sender, e):
+		SaveJson(jsonPath, self.config)
 	
 	def InitializeComponent(self):
 		self._statusStrip1 = System.Windows.Forms.StatusStrip()
@@ -32,6 +56,9 @@ class MainForm(Form):
 		self._comboBox2 = System.Windows.Forms.ComboBox()
 		self._webBrowser1 = System.Windows.Forms.WebBrowser()
 		self._webBrowser2 = System.Windows.Forms.WebBrowser()
+		self._verticalToolStripMenuItem = System.Windows.Forms.ToolStripMenuItem()
+		self._horizonalToolStripMenuItem = System.Windows.Forms.ToolStripMenuItem()
+		self._menuStrip1.SuspendLayout()
 		self._splitContainer1.BeginInit()
 		self._splitContainer1.Panel1.SuspendLayout()
 		self._splitContainer1.Panel2.SuspendLayout()
@@ -48,16 +75,20 @@ class MainForm(Form):
 		# 
 		# menuStrip1
 		# 
+		self._menuStrip1.Items.AddRange(System.Array[System.Windows.Forms.ToolStripItem](
+			[self._verticalToolStripMenuItem,
+			self._horizonalToolStripMenuItem]))
 		self._menuStrip1.Location = System.Drawing.Point(0, 0)
 		self._menuStrip1.Name = "menuStrip1"
-		self._menuStrip1.Size = System.Drawing.Size(592, 24)
+		self._menuStrip1.Size = System.Drawing.Size(592, 26)
 		self._menuStrip1.TabIndex = 1
 		self._menuStrip1.Text = "menuStrip1"
 		# 
 		# splitContainer1
 		# 
+		self._splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
 		self._splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
-		self._splitContainer1.Location = System.Drawing.Point(0, 24)
+		self._splitContainer1.Location = System.Drawing.Point(0, 26)
 		self._splitContainer1.Name = "splitContainer1"
 		# 
 		# splitContainer1.Panel1
@@ -69,8 +100,9 @@ class MainForm(Form):
 		# 
 		self._splitContainer1.Panel2.Controls.Add(self._webBrowser2)
 		self._splitContainer1.Panel2.Controls.Add(self._comboBox2)
-		self._splitContainer1.Size = System.Drawing.Size(592, 251)
+		self._splitContainer1.Size = System.Drawing.Size(592, 249)
 		self._splitContainer1.SplitterDistance = 197
+		self._splitContainer1.SplitterWidth = 8
 		self._splitContainer1.TabIndex = 2
 		# 
 		# comboBox1
@@ -79,7 +111,7 @@ class MainForm(Form):
 		self._comboBox1.FormattingEnabled = True
 		self._comboBox1.Location = System.Drawing.Point(0, 0)
 		self._comboBox1.Name = "comboBox1"
-		self._comboBox1.Size = System.Drawing.Size(197, 20)
+		self._comboBox1.Size = System.Drawing.Size(193, 20)
 		self._comboBox1.TabIndex = 0
 		self._comboBox1.SelectedIndexChanged += self.ComboBox1SelectedIndexChanged
 		self._comboBox1.KeyDown += self.ComboBox1KeyDown
@@ -90,7 +122,7 @@ class MainForm(Form):
 		self._comboBox2.FormattingEnabled = True
 		self._comboBox2.Location = System.Drawing.Point(0, 0)
 		self._comboBox2.Name = "comboBox2"
-		self._comboBox2.Size = System.Drawing.Size(391, 20)
+		self._comboBox2.Size = System.Drawing.Size(383, 20)
 		self._comboBox2.TabIndex = 0
 		self._comboBox2.SelectedIndexChanged += self.ComboBox2SelectedIndexChanged
 		self._comboBox2.KeyDown += self.ComboBox2KeyDown
@@ -101,8 +133,10 @@ class MainForm(Form):
 		self._webBrowser1.Location = System.Drawing.Point(0, 20)
 		self._webBrowser1.MinimumSize = System.Drawing.Size(20, 20)
 		self._webBrowser1.Name = "webBrowser1"
-		self._webBrowser1.Size = System.Drawing.Size(197, 231)
+		self._webBrowser1.Size = System.Drawing.Size(193, 225)
 		self._webBrowser1.TabIndex = 1
+		self._webBrowser1.DocumentCompleted += self.WebBrowser1DocumentCompleted
+		self._webBrowser1.Navigating += self.WebBrowser1Navigating
 		# 
 		# webBrowser2
 		# 
@@ -110,11 +144,24 @@ class MainForm(Form):
 		self._webBrowser2.Location = System.Drawing.Point(0, 20)
 		self._webBrowser2.MinimumSize = System.Drawing.Size(20, 20)
 		self._webBrowser2.Name = "webBrowser2"
-		self._webBrowser2.Size = System.Drawing.Size(391, 231)
+		self._webBrowser2.Size = System.Drawing.Size(383, 225)
 		self._webBrowser2.TabIndex = 1
 		self._webBrowser2.DocumentCompleted += self.WebBrowser2DocumentCompleted
-		self._webBrowser2.Navigated += self.WebBrowser2Navigated
 		self._webBrowser2.Navigating += self.WebBrowser2Navigating
+		# 
+		# verticalToolStripMenuItem
+		# 
+		self._verticalToolStripMenuItem.Name = "verticalToolStripMenuItem"
+		self._verticalToolStripMenuItem.Size = System.Drawing.Size(63, 22)
+		self._verticalToolStripMenuItem.Text = "Vertical"
+		self._verticalToolStripMenuItem.Click += self.VerticalToolStripMenuItemClick
+		# 
+		# horizonalToolStripMenuItem
+		# 
+		self._horizonalToolStripMenuItem.Name = "horizonalToolStripMenuItem"
+		self._horizonalToolStripMenuItem.Size = System.Drawing.Size(79, 22)
+		self._horizonalToolStripMenuItem.Text = "Horizontal"
+		self._horizonalToolStripMenuItem.Click += self.HorizonalToolStripMenuItemClick
 		# 
 		# MainForm
 		# 
@@ -125,6 +172,9 @@ class MainForm(Form):
 		self.MainMenuStrip = self._menuStrip1
 		self.Name = "MainForm"
 		self.Text = "WSplit"
+		self.FormClosed += self.MainFormFormClosed
+		self._menuStrip1.ResumeLayout(False)
+		self._menuStrip1.PerformLayout()
 		self._splitContainer1.Panel1.ResumeLayout(False)
 		self._splitContainer1.Panel2.ResumeLayout(False)
 		self._splitContainer1.EndInit()
@@ -134,10 +184,10 @@ class MainForm(Form):
 
 
 	def ComboBox1SelectedIndexChanged(self, sender, e):
-		pass
+		self.Navigate(sender, self._webBrowser1)
 
 	def ComboBox2SelectedIndexChanged(self, sender, e):
-		pass
+		self.Navigate(sender, self._webBrowser2)
 
 	def ComboBox1KeyDown(self, sender, e):
 		if e.KeyCode == Keys.Enter:
@@ -155,24 +205,32 @@ class MainForm(Form):
 			else:
 				webBrowser.Navigate('file:' + comboBox.Text + '/')
 		else:
-			if len(comboBox.Text) == 0:
+			if len(comboBox.Text) >= 4 and comboBox.Text[:4]=='http':
+				webBrowser.Navigate(comboBox.Text)
+			elif len(comboBox.Text) == 0:
 				webBrowser.Navigate('https://www.google.co.jp')
 			elif len(comboBox.Text)==1:
 				webBrowser.Navigate('https://www.google.co.jp/search?q=' + comboBox.Text)
 			elif comboBox.Text[1]!=':' and comboBox.Text[:2]!='//' and comboBox.Text[:2]!='\\\\':
 				webBrowser.Navigate('https://www.google.co.jp/search?q=' + comboBox.Text)
 		
-				
-
-	def WebBrowser2Navigated(self, sender, e):
-		#WebBrowserNavigatingEventArgs
-		log('WebBrowser2Navigated' + str(e))
-
+	def CorrectUrl(self, path):
+		if len(path) >= 5 and path[:5]=='file:':
+			path = path[5:]
+		return path[3:] if (len(path)>=3 and path[:3]=='///') else path
+	
 	def WebBrowser2Navigating(self, sender, e):
-		#WebBrowserNavigatedEventArgs
-		log('WebBrowser2Navigating' + str(e))
-
+		self.config['Url2'] = self._comboBox2.Text = self.CorrectUrl(str(e.Url))
 	def WebBrowser2DocumentCompleted(self, sender, e):
-		#WebBrowserDocumentCompletedEventArgs
-		log('WebBrowser2DocumentCompleted' + str(e))
-		
+		self.config['Url2'] = self._comboBox2.Text = self.CorrectUrl(str(e.Url))
+
+	def WebBrowser1DocumentCompleted(self, sender, e):
+		self.config['Url1'] = self._comboBox1.Text = self.CorrectUrl(str(e.Url))
+	def WebBrowser1Navigating(self, sender, e):
+		self.config['Url1'] = self._comboBox1.Text = self.CorrectUrl(str(e.Url))
+
+	def HorizonalToolStripMenuItemClick(self, sender, e):
+		self._splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal
+
+	def VerticalToolStripMenuItemClick(self, sender, e):
+		self._splitContainer1.Orientation = System.Windows.Forms.Orientation.Vertical

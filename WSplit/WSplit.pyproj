@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Json.py" />
     <Compile Include="MainForm.py" />
     <Compile Include="Program.py" />
   </ItemGroup>
