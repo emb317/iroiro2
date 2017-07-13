@@ -29,6 +29,7 @@ class MainForm(Form):
 		self.InitializeComponent()
 		
 		self.config = {
+			'History':[],
 			'Url1':'C:',
 			'Url2':'C:'
 		}
@@ -38,14 +39,24 @@ class MainForm(Form):
 		except:
 			pass
 		
-		SaveJson(jsonPath, self.config)
-		
 		self._comboBox1.Text = self.config['Url1']
 		self._comboBox2.Text = self.config['Url2']
 		self.Navigate(self._comboBox1, self._webBrowser1)
 		self.Navigate(self._comboBox2, self._webBrowser2)
+		
+		self._comboBox1.Items.Clear()
+		self._comboBox1.Items.AddRange(self.config['History'])
+		while self._comboBox1.Items.Count > 20:
+			self._comboBox1.Items.RemoveAt(0)
+		self._comboBox2.Items.Clear()
+		self._comboBox2.Items.AddRange(self.config['History'])
+		while self._comboBox2.Items.Count > 20:
+			self._comboBox2.Items.RemoveAt(0)
+		
+		SaveJson(jsonPath, self.config)
 
 	def MainFormFormClosed(self, sender, e):
+		self.config['History'] = self._comboBox1.Items
 		SaveJson(jsonPath, self.config)
 	
 	def InitializeComponent(self):
@@ -200,6 +211,13 @@ class MainForm(Form):
 	def Navigate(self, comboBox, webBrowser):
 		if Directory.Exists(comboBox.Text):
 			comboBox.Text = CorrectPath(comboBox.Text)
+			if comboBox.Items.Contains(comboBox.Text) == False:
+				self._comboBox1.Items.Add(comboBox.Text)
+				while self._comboBox1.Items.Count > 20:
+					self._comboBox1.Items.RemoveAt(0)
+				self._comboBox2.Items.Add(comboBox.Text)
+				while self._comboBox2.Items.Count > 20:
+					self._comboBox2.Items.RemoveAt(0)
 			if comboBox.Text[:2]!='//':
 				webBrowser.Navigate(comboBox.Text + '/')
 			else:
