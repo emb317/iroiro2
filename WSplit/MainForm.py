@@ -16,6 +16,12 @@ jsonPath = 'settings.json'
 def log(s):
 	System.Diagnostics.Debug.WriteLine(s)
 
+def log_except(s):
+	log('<--------- Error ----------')
+	for e in s:
+		log(e)
+	log('-------------------------->')
+
 def CorrectPath(path):
 	path = path.strip()
 	path = path.replace('\\', '/')
@@ -29,15 +35,24 @@ class MainForm(Form):
 		self.InitializeComponent()
 		
 		self.config = {
+			'Orientation':'Vertical',
 			'History':[],
+			'Window':{
+				'Left':100,
+				'Top':100,
+				'Width':800,
+				'Height':600
+			},
 			'Url1':'C:',
 			'Url2':'C:'
 		}
 		
 		try:
+			if File.Exists(jsonPath):
+				File.Copy(jsonPath, jsonPath + '.bak', True)
 			self.config.update(LoadJson(jsonPath))
 		except:
-			pass
+			log_except(sys.exc_info())
 		
 		self._comboBox1.Text = self.config['Url1']
 		self._comboBox2.Text = self.config['Url2']
@@ -53,10 +68,39 @@ class MainForm(Form):
 		while self._comboBox2.Items.Count > 20:
 			self._comboBox2.Items.RemoveAt(0)
 		
+		if self.config['Orientation']=='Vertical':
+			self._splitContainer1.Orientation = Orientation.Vertical
+		else:
+			self.config['Orientation'] = 'Horizontal'
+			self._splitContainer1.Orientation = Orientation.Horizontal
+		
 		SaveJson(jsonPath, self.config)
+		
+
+	def MainFormLoad(self, sender, e):
+		self.Left   = self.config['Window']['Left']
+		self.Top    = self.config['Window']['Top']
+		self.Width  = self.config['Window']['Width']
+		self.Height = self.config['Window']['Height']
 
 	def MainFormFormClosed(self, sender, e):
 		self.config['History'] = self._comboBox1.Items
+
+		if self._splitContainer1.Orientation == Orientation.Vertical:
+			self.config['Orientation'] = 'Vertical'
+		else:
+			self.config['Orientation'] = 'Horizontal'
+			
+		self.config['Window']['Left']   = self.Left
+		self.config['Window']['Top']    = self.Top
+		self.config['Window']['Width']  = self.Width
+		self.config['Window']['Height'] = self.Height
+		
+		self.config['Url2'] = self._comboBox2.Text
+
+	def WebBrowser1DocumentCompleted(self, sender, e):
+		self.config['Url1'] = self._comboBox1.Text
+
 		SaveJson(jsonPath, self.config)
 	
 	def InitializeComponent(self):
@@ -148,6 +192,7 @@ class MainForm(Form):
 		self._webBrowser1.TabIndex = 1
 		self._webBrowser1.DocumentCompleted += self.WebBrowser1DocumentCompleted
 		self._webBrowser1.Navigating += self.WebBrowser1Navigating
+		self._webBrowser1.PreviewKeyDown += self.WebBrowserPreviewKeyDown
 		# 
 		# webBrowser2
 		# 
@@ -159,6 +204,7 @@ class MainForm(Form):
 		self._webBrowser2.TabIndex = 1
 		self._webBrowser2.DocumentCompleted += self.WebBrowser2DocumentCompleted
 		self._webBrowser2.Navigating += self.WebBrowser2Navigating
+		self._webBrowser2.PreviewKeyDown += self.WebBrowserPreviewKeyDown
 		# 
 		# verticalToolStripMenuItem
 		# 
@@ -184,6 +230,7 @@ class MainForm(Form):
 		self.Name = "MainForm"
 		self.Text = "WSplit"
 		self.FormClosed += self.MainFormFormClosed
+		self.Load += self.MainFormLoad
 		self._menuStrip1.ResumeLayout(False)
 		self._menuStrip1.PerformLayout()
 		self._splitContainer1.Panel1.ResumeLayout(False)
@@ -238,17 +285,36 @@ class MainForm(Form):
 		return path[3:] if (len(path)>=3 and path[:3]=='///') else path
 	
 	def WebBrowser2Navigating(self, sender, e):
-		self.config['Url2'] = self._comboBox2.Text = self.CorrectUrl(str(e.Url))
+		self._comboBox2.Text = self.CorrectUrl(str(e.Url))
 	def WebBrowser2DocumentCompleted(self, sender, e):
-		self.config['Url2'] = self._comboBox2.Text = self.CorrectUrl(str(e.Url))
+		self._comboBox2.Text = self.CorrectUrl(str(e.Url))
 
 	def WebBrowser1DocumentCompleted(self, sender, e):
-		self.config['Url1'] = self._comboBox1.Text = self.CorrectUrl(str(e.Url))
+		self._comboBox1.Text = self.CorrectUrl(str(e.Url))
 	def WebBrowser1Navigating(self, sender, e):
-		self.config['Url1'] = self._comboBox1.Text = self.CorrectUrl(str(e.Url))
+		self._comboBox1.Text = self.CorrectUrl(str(e.Url))
 
 	def HorizonalToolStripMenuItemClick(self, sender, e):
-		self._splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal
+		self._splitContainer1.Orientation = Orientation.Horizontal
 
 	def VerticalToolStripMenuItemClick(self, sender, e):
-		self._splitContainer1.Orientation = System.Windows.Forms.Orientation.Vertical
+		self._splitContainer1.Orientation = Orientation.Vertical
+
+	def WebBrowserPreviewKeyDown(self, sender, e):
+		if e.KeyCode == Keys.Back:
+			path = str(sender.Url)
+
+			if len(path) >= 5 and path[:5]=='file:':
+				path = path[5:]
+			if len(path) >= 3 and path[:3]=='///':
+				path = path[3:]
+
+			log(path)
+			
+			if Directory.Exists(path):
+				if path.rfind('/') > 0:
+					sender.Navigate(path[:path.rfind('/')] + '/')
+					log('Exists')
+			else:
+				sender.GoBack()
+			

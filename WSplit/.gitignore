@@ -1,3 +1,4 @@
 /obj
 /bin
 /settings.json
+*.bak
