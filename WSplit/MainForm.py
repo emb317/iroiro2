@@ -2,6 +2,7 @@
 import System.Windows.Forms
 
 import re
+import sys
 
 from System.Drawing import *
 from System.Windows.Forms import *
@@ -36,7 +37,7 @@ class MainForm(Form):
 		
 		self.config = {
 			'Orientation':'Vertical',
-			'History':[],
+			'History':['C:'],
 			'Window':{
 				'Left':100,
 				'Top':100,
