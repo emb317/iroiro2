@@ -5,8 +5,8 @@ PROG := a.exe
 OUTDIR := obj
 
 # インクルードパス
-INCDIR += -I src/inc
-INCDIR += -I src/inc2
+INCDIR += src/inc
+INCDIR += src/inc2
 
 # ソース (ファイルパスを指定する)
 SRCS += src/main.c
@@ -16,27 +16,36 @@ SRCS += $(wildcard src/test/*.c)
 # 使用するコンパイラ
 CC = gcc
 # コンパイルオプション
-CFLAGS = -Wall -O2 $(INCDIR) -g
-
-RM = cmd.exe /C del /F
+CFLAGS += -Wall
+CFLAGS += -O2
+CFLAGS += $(addprefix -I ,$(INCDIR))
+CFLAGS += -g
 
 # ------ ここより下は変更しないこと! ------
+
+# 出力オブジェクト -> obj/main.o obj/test.o
 OBJS := $(addprefix $(OUTDIR)/,$(notdir $(patsubst %.c,%.o,$(SRCS))))
+# 依存関係ファイル -> obj/main.d obj/test.d
 DEPS := $(addprefix $(OUTDIR)/,$(notdir $(patsubst %.c,%.d,$(SRCS))))
+# 探索パス -> obj src src/test
 VPATH = $(OUTDIR) $(dir $(SRCS))
 
+# 実行ファイル作成 (リンク)
 $(PROG): $(OBJS) $(DEPS)
 	$(CC) -o $@ $(OBJS)
 
+# 依存関係ファイル作成
 $(OUTDIR)/%.d:%.c
-	$(CC) $(CFLAGS) -MM $< | sed 's!.*:!$(patsubst %.d,%.o,$@):!' > $@
+#	参照しているヘッダを依存関係ファイルに出力
+#	ヘッダを変更した際にオブジェクトと依存関係ファイルが両方更新されるよう2行出力する
+#	obj/main.d: src/main.c src/inc/test1.h src/inc2/test2.h
+#	obj/main.o: src/main.c src/inc/test1.h src/inc2/test2.h
+	$(CC) $(CFLAGS) -MM $< | sed -e 's!$(subst .d,.o,$(notdir $@))!$@!' > $@
+	$(CC) $(CFLAGS) -MM $< | sed -e 's!$(subst .d,.o,$(notdir $@))!$(subst .d,.o,$@)!' >> $@
 
+# オブジェクト作成 (コンパイル)
 $(OUTDIR)/%.o:%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-.PHONY : clean depend
-clean:
-	$(RM) $(PROG)
-	$(RM) $(OUTDIR)/*.*
-
+# 依存関係ファイルの読み込み
 -include $(DEPS)
